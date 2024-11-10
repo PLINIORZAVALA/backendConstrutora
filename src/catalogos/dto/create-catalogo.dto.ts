@@ -1,5 +1,10 @@
+import { IsString, IsOptional } from 'class-validator';
+
 export class CreateCatalogoDto {
-    nombre: string;
-    descripcion?: string;
-  }
-  
+  @IsString()
+  nombre: string;
+
+  @IsString()
+  @IsOptional()
+  descripcion?: string;
+}

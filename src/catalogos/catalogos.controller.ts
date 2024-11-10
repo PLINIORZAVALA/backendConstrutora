@@ -6,16 +6,17 @@ import { UpdateCatalogoDto } from './dto/update-catalogo.dto';
 
 @Controller('catalogos')
 export class CatalogosController {
-  constructor(private readonly catalogosService: CatalogosService) {}
 
-  @Post()
-  create(@Body() createCatalogoDto: CreateCatalogoDto) {
-    return this.catalogosService.create(createCatalogoDto);
-  }
+  constructor(private readonly catalogosService: CatalogosService) {}
 
   @Get()
   findAll() {
     return this.catalogosService.findAll();
+  }
+  
+  @Post()
+  create(@Body() createCatalogoDto: CreateCatalogoDto) {
+    return this.catalogosService.create(createCatalogoDto);
   }
 
   @Get(':id')

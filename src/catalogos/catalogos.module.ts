@@ -1,9 +1,11 @@
-// src/catalogos/catalogos.module.ts
 import { Module } from '@nestjs/common';
-import { CatalogosController } from './catalogos.controller';  // Asegúrate de que esta importación esté correcta
-import { CatalogosService } from './catalogos.service';        // Asegúrate de que esta importación esté correcta
+import { CatalogosController } from './catalogos.controller';
+import { CatalogosService } from './catalogos.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Catalogo } from './entities/catalogo.entity';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Catalogo])], // Asegúrate de importar el repositorio
   controllers: [CatalogosController],
   providers: [CatalogosService],
 })
