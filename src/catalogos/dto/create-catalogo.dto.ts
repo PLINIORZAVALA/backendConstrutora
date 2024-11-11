@@ -4,7 +4,7 @@ export class CreateCatalogoDto {
   @IsString()
   nombre: string;
 
-  @IsString()
+  @IsString() 
   @IsOptional()
   descripcion?: string;
 }

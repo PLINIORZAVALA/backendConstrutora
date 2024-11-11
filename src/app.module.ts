@@ -16,7 +16,7 @@ import { ProyectosModule } from './proyectos/proyectos.module';
       password: '',      // Si tienes una contraseña, colócala aquí
       database: 'db_construct',  // Asegúrate de que esta base de datos exista
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false, // Evitar en producción, en desarrollo puedes usar true si quieres que la base se sincronice automáticamente
+      synchronize: true, // Evitar en producción, en desarrollo puedes usar true si quieres que la base se sincronice automáticamente
     }),
     CatalogosModule, 
     CitasModule, 
