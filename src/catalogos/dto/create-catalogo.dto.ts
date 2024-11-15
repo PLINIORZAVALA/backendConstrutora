@@ -4,7 +4,14 @@ export class CreateCatalogoDto {
   @IsString()
   nombre: string;
 
-  @IsString() 
+  @IsString()
+  tipo: string;
+
+  @IsString()
   @IsOptional()
   descripcion?: string;
+
+  @IsString()
+  @IsOptional()
+  imagen: string;
 }

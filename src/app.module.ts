@@ -11,10 +11,10 @@ import { ProyectosModule } from './proyectos/proyectos.module';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
-      port: 3307,
+      port: 3306,
       username: 'root',  // Asegúrate de que el usuario y la contraseña sean correctos
       password: '',      // Si tienes una contraseña, colócala aquí
-      database: 'db_construct',  // Asegúrate de que esta base de datos exista
+      database: 'constructora',  // Asegúrate de que esta base de datos exista
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true, // Evitar en producción, en desarrollo puedes usar true si quieres que la base se sincronice automáticamente
     }),
