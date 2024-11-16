@@ -14,10 +14,21 @@ export class CatalogosService {
     private catalogoRepository: Repository<Catalogo>,
   ) {}
 
-  // Método para crear un catálogo
-  async create(createCatalogoDto: CreateCatalogoDto) {
+  // MÉTODO PARA CREAR UN CATÁLOGO
+  //Codigo mas simple para obtner los datos
+  /*async create(createCatalogoDto: CreateCatalogoDto) {
     const catalogo = this.catalogoRepository.create(createCatalogoDto);
     return await this.catalogoRepository.save(catalogo);
+  }*/
+ //Codigo para tener mejor control
+  async create(createCatalogoDto: CreateCatalogoDto) {
+    const newCatalogo = this.catalogoRepository.create({
+      nombre: createCatalogoDto.nombre,
+      tipo: createCatalogoDto.tipo,
+      descripcion: createCatalogoDto.descripcion,
+      imagen: createCatalogoDto.imagen,
+    });
+    return await this.catalogoRepository.save(newCatalogo);
   }
 
   // Método para obtener todos los catálogos
@@ -30,12 +41,35 @@ export class CatalogosService {
     return await this.catalogoRepository.findOne({ where: { id } });
   }
 
-  // Método para actualizar un catálogo
-  async update(id: number, updateCatalogoDto: UpdateCatalogoDto) {
+  //MÉTODO PARA ACTUALIZAR UN CÁTALOGO
+  /*async update(id: number, updateCatalogoDto: UpdateCatalogoDto) {
     await this.catalogoRepository.update(id, updateCatalogoDto);
     return this.findOne(id);
-  }
-
+  }*/
+  async update(id: number, updateCatalogoDto: UpdateCatalogoDto) {
+     // Buscar el catálogo por ID
+    const catalogo = await this.catalogoRepository.findOne({ where: { id } });
+    
+     if (!catalogo) {
+      return { msg: 'Catálogo no encontrado', success: false };
+     }
+    
+     // Asignar valores específicos del DTO a los atributos del catálogo
+     catalogo.nombre = updateCatalogoDto.nombre ?? catalogo.nombre;
+     catalogo.descripcion = updateCatalogoDto.descripcion ?? catalogo.descripcion;
+     catalogo.tipo = updateCatalogoDto.tipo ?? catalogo.tipo;
+     catalogo.imagen = updateCatalogoDto.imagen ?? catalogo.imagen;
+    
+    // Guardar los cambios en la base de datos
+    await this.catalogoRepository.save(catalogo);
+    
+     return {
+       msg: 'Catálogo actualizado con éxito',
+       success: true,
+       data: catalogo,
+     };
+   }
+    
   // Método para eliminar un catálogo
   async remove(id: number) {
     const catalogo = await this.findOne(id);

@@ -4,33 +4,35 @@ import { CatalogosService } from './catalogos.service';
 import { CreateCatalogoDto } from './dto/create-catalogo.dto';
 import { UpdateCatalogoDto } from './dto/update-catalogo.dto';
 
-@Controller('catalogos')
+@Controller('api/catalogos')
 export class CatalogosController {
-
   constructor(private readonly catalogosService: CatalogosService) {}
 
-  @Get()
-  findAll() {
-    return this.catalogosService.findAll();
-  }
-  
-  @Post()
-  create(@Body() createCatalogoDto: CreateCatalogoDto) {
-    return this.catalogosService.create(createCatalogoDto);
+  @Post('create')
+  async createCatalogo(@Body() createCatalogoDto: CreateCatalogoDto) {
+    return await this.catalogosService.create(createCatalogoDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.catalogosService.findOne(id);
+  @Put('update/:id')
+  async updateCatalogo(
+    @Param('id') id: number,
+    @Body() updateCatalogoDto: UpdateCatalogoDto,
+  ) {
+    return await this.catalogosService.update(id, updateCatalogoDto);
   }
 
-  @Put(':id')
-  update(@Param('id') id: number, @Body() updateCatalogoDto: UpdateCatalogoDto) {
-    return this.catalogosService.update(id, updateCatalogoDto);
+  @Get('getAll')
+  async getAllCatalogos() {
+    return await this.catalogosService.findAll();
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.catalogosService.remove(id);
+  @Get('getById/:id')
+  async getCatalogoById(@Param('id') id: number) {
+    return await this.catalogosService.findOne(id);
+  }
+
+  @Delete('delete/:id')
+  async deleteCatalogo(@Param('id') id: number) {
+    return await this.catalogosService.remove(id);
   }
 }

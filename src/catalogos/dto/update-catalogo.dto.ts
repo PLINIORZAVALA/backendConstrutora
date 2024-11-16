@@ -1,7 +1,22 @@
+import { IsString, IsOptional, IsNumber } from 'class-validator';
+
 export class UpdateCatalogoDto {
-    nombre?: string;
-    descripcion?: string;
-    tipo: string;
-    imagen: string;
-  }
-  
+  @IsNumber()
+  id: number; // Se incluye el ID como parte del DTO
+
+  @IsString()
+  @IsOptional()
+  nombre?: string;
+
+  @IsString()
+  @IsOptional()
+  descripcion?: string;
+
+  @IsString()
+  @IsOptional()
+  tipo?: string;
+
+  @IsString()
+  @IsOptional()
+  imagen?: string;
+}
