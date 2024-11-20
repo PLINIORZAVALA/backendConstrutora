@@ -1,4 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+
+
+import { ImagenCatalogo } from './catalogoImg.entity';
 
 @Entity('catalogos')
 export class Catalogo {
@@ -14,6 +17,9 @@ export class Catalogo {
   @Column({ length: 255, nullable: true })
   descripcion: string;
 
-  @Column({ type: 'varchar', length: 16, nullable: true }) // Cambiado a 'varchar(16)'
-  imagen: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  imagen: string; // Mantenemos este nombre
+
+  @OneToMany(() => ImagenCatalogo, (imagen) => imagen.catalogo, { cascade: true })
+  imagenesAdicionales: ImagenCatalogo[]; // Relación uno-a-muchos para las imágenes adicionales
 }

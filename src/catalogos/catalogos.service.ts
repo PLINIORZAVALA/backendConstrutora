@@ -1,82 +1,119 @@
-// src/catalogos/catalogos.service.ts
 import { Injectable } from '@nestjs/common';
 import { CreateCatalogoDto } from './dto/create-catalogo.dto';
 import { UpdateCatalogoDto } from './dto/update-catalogo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Catalogo } from './entities/catalogo.entity';
+import { ImagenCatalogo } from './entities/catalogoImg.entity';
 
 @Injectable()
 export class CatalogosService {
-
   constructor(
     @InjectRepository(Catalogo)
     private catalogoRepository: Repository<Catalogo>,
+    @InjectRepository(ImagenCatalogo)
+    private imagenCatalogoRepository: Repository<ImagenCatalogo>,
   ) {}
 
-  // MÉTODO PARA CREAR UN CATÁLOGO
-  //Codigo mas simple para obtner los datos
-  /*async create(createCatalogoDto: CreateCatalogoDto) {
-    const catalogo = this.catalogoRepository.create(createCatalogoDto);
-    return await this.catalogoRepository.save(catalogo);
-  }*/
- //Codigo para tener mejor control
+  // MÉTODO PARA CREAR UN CATÁLOGO CON IMÁGENES
   async create(createCatalogoDto: CreateCatalogoDto) {
+    // Crear un nuevo catálogo
     const newCatalogo = this.catalogoRepository.create({
       nombre: createCatalogoDto.nombre,
       tipo: createCatalogoDto.tipo,
       descripcion: createCatalogoDto.descripcion,
-      imagen: createCatalogoDto.imagen,
+      imagen: createCatalogoDto.imagen, // Imagen principal
     });
-    return await this.catalogoRepository.save(newCatalogo);
+
+    // Guardamos el catálogo en la base de datos
+    const catalogo = await this.catalogoRepository.save(newCatalogo);
+
+    // Si hay imágenes adicionales, asociarlas con el catálogo
+    if (createCatalogoDto.imagenesAdicionales && createCatalogoDto.imagenesAdicionales.length > 0) {
+      const imagenes = createCatalogoDto.imagenesAdicionales.map(imagenDto => {
+        const imagen = this.imagenCatalogoRepository.create({
+          ruta_imagen: imagenDto.ruta_imagen,
+          descripcion_imagen: imagenDto.descripcion_imagen,
+          catalogo: catalogo,  // Asociamos la imagen al catálogo recién creado
+        });
+        return imagen;
+      });
+      
+      await this.imagenCatalogoRepository.save(imagenes);
+    }
+
+    return catalogo;
   }
 
-  // Método para obtener todos los catálogos
+  // Método para obtener todos los catálogos con las imágenes asociadas
   async findAll() {
-    return await this.catalogoRepository.find();
+    return await this.catalogoRepository.find({
+      relations: ['imagenesAdicionales'],  // Aseguramos que cargamos las imágenes adicionales asociadas
+    });
   }
 
-  // Método para obtener un catálogo por id
+  // Método para obtener un catálogo por id con sus imágenes adicionales
   async findOne(id: number) {
-    return await this.catalogoRepository.findOne({ where: { id } });
+    return await this.catalogoRepository.findOne({
+      where: { id },
+      relations: ['imagenesAdicionales'],  // Incluimos las imágenes adicionales asociadas al catálogo
+    });
   }
 
-  //MÉTODO PARA ACTUALIZAR UN CÁTALOGO
-  /*async update(id: number, updateCatalogoDto: UpdateCatalogoDto) {
-    await this.catalogoRepository.update(id, updateCatalogoDto);
-    return this.findOne(id);
-  }*/
+  // MÉTODO PARA ACTUALIZAR UN CÁTALOGO
   async update(id: number, updateCatalogoDto: UpdateCatalogoDto) {
-     // Buscar el catálogo por ID
-    const catalogo = await this.catalogoRepository.findOne({ where: { id } });
-    
-     if (!catalogo) {
+    const catalogo = await this.catalogoRepository.findOne({ where: { id }, relations: ['imagenesAdicionales'] });
+
+    if (!catalogo) {
       return { msg: 'Catálogo no encontrado', success: false };
-     }
-    
-     // Asignar valores específicos del DTO a los atributos del catálogo
-     catalogo.nombre = updateCatalogoDto.nombre ?? catalogo.nombre;
-     catalogo.descripcion = updateCatalogoDto.descripcion ?? catalogo.descripcion;
-     catalogo.tipo = updateCatalogoDto.tipo ?? catalogo.tipo;
-     catalogo.imagen = updateCatalogoDto.imagen ?? catalogo.imagen;
-    
-    // Guardar los cambios en la base de datos
+    }
+
+    // Actualizamos los campos del catálogo
+    catalogo.nombre = updateCatalogoDto.nombre ?? catalogo.nombre;
+    catalogo.descripcion = updateCatalogoDto.descripcion ?? catalogo.descripcion;
+    catalogo.tipo = updateCatalogoDto.tipo ?? catalogo.tipo;
+    catalogo.imagen = updateCatalogoDto.imagen ?? catalogo.imagen;
+
+    // Si se incluye una nueva imagen principal, la actualizamos
+    if (updateCatalogoDto.imagen) {
+      catalogo.imagen = updateCatalogoDto.imagen;
+    }
+
+    // Si se incluyen nuevas imágenes adicionales, las agregamos
+    if (updateCatalogoDto.imagenesAdicionales) {
+      const imagenes = updateCatalogoDto.imagenesAdicionales.map(imagenDto => {
+        const imagen = this.imagenCatalogoRepository.create({
+          ruta_imagen: imagenDto.ruta_imagen,
+          descripcion_imagen: imagenDto.descripcion_imagen,
+          catalogo: catalogo,  // Asociamos las nuevas imágenes al catálogo
+        });
+        return imagen;
+      });
+
+      await this.imagenCatalogoRepository.save(imagenes);
+    }
+
+    // Guardamos los cambios en el catálogo
     await this.catalogoRepository.save(catalogo);
-    
-     return {
-       msg: 'Catálogo actualizado con éxito',
-       success: true,
-       data: catalogo,
-     };
-   }
-    
-  // Método para eliminar un catálogo
+
+    return {
+      msg: 'Catálogo actualizado con éxito',
+      success: true,
+      data: catalogo,
+    };
+  }
+
+  // Método para eliminar un catálogo y sus imágenes asociadas
   async remove(id: number) {
     const catalogo = await this.findOne(id);
     if (catalogo) {
+      // Eliminar las imágenes asociadas al catálogo antes de eliminar el catálogo
+      if (catalogo.imagenesAdicionales && catalogo.imagenesAdicionales.length > 0) {
+        await this.imagenCatalogoRepository.remove(catalogo.imagenesAdicionales);
+      }
       await this.catalogoRepository.remove(catalogo);
-      return { message: `Catalogo with id ${id} removed` };
+      return { message: `Catálogo con id ${id} eliminado` };
     }
-    return { message: `Catalogo with id ${id} not found` };
+    return { message: `Catálogo con id ${id} no encontrado` };
   }
 }

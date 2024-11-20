@@ -1,16 +1,10 @@
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsUrl } from 'class-validator';
+import { ImagenCatalogoDto } from './imagen-catalogo.dto';
 
 export class UpdateCatalogoDto {
-  @IsNumber()
-  id: number; // Se incluye el ID como parte del DTO
-
   @IsString()
   @IsOptional()
   nombre?: string;
-
-  @IsString()
-  @IsOptional()
-  descripcion?: string;
 
   @IsString()
   @IsOptional()
@@ -18,5 +12,13 @@ export class UpdateCatalogoDto {
 
   @IsString()
   @IsOptional()
-  imagen?: string;
+  descripcion?: string;
+
+  @IsString()
+  @IsOptional()
+  imagen?: string; // Imagen principal (opcional)
+
+  @IsArray()
+  @IsOptional()
+  imagenesAdicionales?: ImagenCatalogoDto[]; // Relación con las imágenes adicionales
 }

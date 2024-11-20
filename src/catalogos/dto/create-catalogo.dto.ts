@@ -1,4 +1,5 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsUrl } from 'class-validator';
+import { ImagenCatalogoDto } from './imagen-catalogo.dto';
 
 export class CreateCatalogoDto {
   @IsString()
@@ -13,5 +14,9 @@ export class CreateCatalogoDto {
 
   @IsString()
   @IsOptional()
-  imagen: string;
+  imagen?: string; // Imagen principal (opcional)
+
+  @IsArray()
+  @IsOptional()
+  imagenesAdicionales?: ImagenCatalogoDto[]; // Relación con las imágenes adicionales
 }
