@@ -3,8 +3,11 @@ import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
 import { CatalogosModule } from './catalogos/catalogos.module';
-import { CitasModule } from './citas/citas.module';
-import { ProyectosModule } from './proyectos/proyectos.module';
+import { CitasModule } from './catalogos/modulos/citas/citas.module';
+import { UsuariosModule } from './catalogos/modulos/usuarios/usuarios.module';
+import { ImgCatalogoModule } from './catalogos/modulos/img_catalogo/img_catalogo.module';
+import { ModificacionesModule } from './catalogos/modulos/modificaciones/modificaciones.module';
+
 
 @Module({
   imports: [
@@ -18,9 +21,11 @@ import { ProyectosModule } from './proyectos/proyectos.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true, // Evitar en producción, en desarrollo puedes usar true si quieres que la base se sincronice automáticamente
     }),
-    CatalogosModule, 
-    CitasModule, 
-    ProyectosModule
+    CatalogosModule,
+    CitasModule,
+    UsuariosModule,
+    ImgCatalogoModule,
+    ModificacionesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

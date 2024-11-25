@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { CitasController } from './citas.controller';
 import { CitasService } from './citas.service';
+import { CitasController } from './citas.controller';
 
 @Module({
   controllers: [CitasController],
-  providers: [CitasService]
+  providers: [CitasService],
 })
 export class CitasModule {}
