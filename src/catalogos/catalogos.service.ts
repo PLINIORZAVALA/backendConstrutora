@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCatalogoDto } from './dto/create-catalogo.dto';
-import { UpdateCatalogoDto } from './dto/update-catalogo.dto';
+import { CreateCatalogoDto } from './dto/catalogo/create-catalogo.dto';
+import { UpdateCatalogoDto } from './dto/catalogo/update-catalogo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Catalogo } from './entities/catalogo.entity';
