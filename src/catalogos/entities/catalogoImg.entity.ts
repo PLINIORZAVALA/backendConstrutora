@@ -1,17 +1,17 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Catalogo } from './catalogo.entity';
 
-@Entity('imagenes_catalogo')
+@Entity()
 export class ImagenCatalogo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column()
   ruta_imagen: string;
 
-  @Column({ length: 255, nullable: true })
+  @Column()
   descripcion_imagen: string;
 
-  @ManyToOne(() => Catalogo, (catalogo) => catalogo.imagenesAdicionales, { onDelete: 'CASCADE' })
-  catalogo: Catalogo; // Relación muchos-a-uno
+  @ManyToOne(() => Catalogo, catalogo => catalogo.imagenesAdicionales)
+  catalogo: Catalogo;
 }

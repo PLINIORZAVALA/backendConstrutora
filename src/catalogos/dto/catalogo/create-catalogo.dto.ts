@@ -1,22 +1,27 @@
-import { IsString, IsOptional, IsArray, IsUrl } from 'class-validator';
-import { ImagenCatalogoDto } from './imagen-catalogo.dto';
+import { IsNotEmpty, IsString, IsOptional, IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ImagenCatalogo } from '../../entities/catalogoImg.entity';
 
 export class CreateCatalogoDto {
+  @IsNotEmpty()
   @IsString()
   nombre: string;
 
+  @IsNotEmpty()
   @IsString()
   tipo: string;
 
-  @IsString()
   @IsOptional()
-  descripcion?: string;
-
   @IsString()
-  @IsOptional()
-  imagen?: string; // Imagen principal (opcional)
+  descripcion: string;
 
+  @IsNotEmpty()
+  @IsString()
+  imagen: string;
+
+  @IsOptional()
   @IsArray()
-  @IsOptional()
-  imagenesAdicionales?: ImagenCatalogoDto[]; // Relación con las imágenes adicionales
+  @ValidateNested({ each: true })
+  @Type(() => ImagenCatalogo)
+  imagenesAdicionales: ImagenCatalogo[];
 }

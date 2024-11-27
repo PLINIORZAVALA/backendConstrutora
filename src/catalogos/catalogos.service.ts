@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Catalogo } from './entities/catalogo.entity';
 import { ImagenCatalogo } from './entities/catalogoImg.entity';
+import { UpdateImagenesAdicionalesDto } from './dto/imagenCatalogo/UpdateImagen.dto';
 
 @Injectable()
 export class CatalogosService {
@@ -15,9 +16,8 @@ export class CatalogosService {
     private imagenCatalogoRepository: Repository<ImagenCatalogo>,
   ) {}
 
-  // MÉTODO PARA CREAR UN CATÁLOGO CON IMÁGENES
+  // Método para crear un catálogo con imágenes
   async create(createCatalogoDto: CreateCatalogoDto) {
-    // Crear un nuevo catálogo
     const newCatalogo = this.catalogoRepository.create({
       nombre: createCatalogoDto.nombre,
       tipo: createCatalogoDto.tipo,
@@ -25,67 +25,74 @@ export class CatalogosService {
       imagen: createCatalogoDto.imagen, // Imagen principal
     });
 
-    // Guardamos el catálogo en la base de datos
     const catalogo = await this.catalogoRepository.save(newCatalogo);
 
-    // Si hay imágenes adicionales, asociarlas con el catálogo
     if (createCatalogoDto.imagenesAdicionales && createCatalogoDto.imagenesAdicionales.length > 0) {
       const imagenes = createCatalogoDto.imagenesAdicionales.map(imagenDto => {
         const imagen = this.imagenCatalogoRepository.create({
           ruta_imagen: imagenDto.ruta_imagen,
           descripcion_imagen: imagenDto.descripcion_imagen,
-          catalogo: catalogo,  // Asociamos la imagen al catálogo recién creado
+          catalogo: catalogo,
         });
         return imagen;
       });
-      
+
       await this.imagenCatalogoRepository.save(imagenes);
     }
 
     return catalogo;
   }
 
-  // Método para obtener todos los catálogos con las imágenes asociadas
+  // Método para obtener todos los catálogos con imágenes asociadas
   async findAll() {
     return await this.catalogoRepository.find({
-      relations: ['imagenesAdicionales'],  // Aseguramos que cargamos las imágenes adicionales asociadas
+      relations: ['imagenesAdicionales'],
     });
   }
 
-  // Método para obtener un catálogo por id con sus imágenes adicionales
+  // Método para obtener un catálogo específico con imágenes adicionales
   async findOne(id: number) {
     return await this.catalogoRepository.findOne({
       where: { id },
-      relations: ['imagenesAdicionales'],  // Incluimos las imágenes adicionales asociadas al catálogo
+      relations: ['imagenesAdicionales'],
     });
   }
 
-  // MÉTODO PARA ACTUALIZAR UN CÁTALOGO
+  // Método para actualizar un catálogo y sus imágenes adicionales
   async update(id: number, updateCatalogoDto: UpdateCatalogoDto) {
-    const catalogo = await this.catalogoRepository.findOne({ where: { id }, relations: ['imagenesAdicionales'] });
+    const catalogo = await this.catalogoRepository.findOne({
+      where: { id },
+      relations: ['imagenesAdicionales'],
+    });
 
     if (!catalogo) {
       return { msg: 'Catálogo no encontrado', success: false };
     }
 
-    // Actualizamos los campos del catálogo
+    // Actualizar los datos del catálogo
     catalogo.nombre = updateCatalogoDto.nombre ?? catalogo.nombre;
     catalogo.descripcion = updateCatalogoDto.descripcion ?? catalogo.descripcion;
     catalogo.tipo = updateCatalogoDto.tipo ?? catalogo.tipo;
     catalogo.imagen = updateCatalogoDto.imagen ?? catalogo.imagen;
 
-    // Si se incluye una nueva imagen principal, la actualizamos
-    if (updateCatalogoDto.imagen) {
-      catalogo.imagen = updateCatalogoDto.imagen;
-    }
-
-    // Si se incluyen nuevas imágenes adicionales, las agregamos
+    // Si hay nuevas imágenes, agregar y asociarlas
     if (updateCatalogoDto.imagenesAdicionales) {
+      // Eliminar imágenes adicionales antiguas si es necesario
+      if (updateCatalogoDto.eliminarImagenesAdicionales && updateCatalogoDto.eliminarImagenesAdicionales.length > 0) {
+        const imagenesAEliminar = catalogo.imagenesAdicionales.filter(imagen =>
+          updateCatalogoDto.eliminarImagenesAdicionales.includes(imagen.id)
+        );
+        if (imagenesAEliminar.length > 0) {
+          await this.imagenCatalogoRepository.remove(imagenesAEliminar);
+        }
+      }
+
+      // Agregar nuevas imágenes
       const imagenes = updateCatalogoDto.imagenesAdicionales.map(imagenDto => {
         const imagen = this.imagenCatalogoRepository.create({
           ruta_imagen: imagenDto.ruta_imagen,
           descripcion_imagen: imagenDto.descripcion_imagen,
-          catalogo: catalogo,  // Asociamos las nuevas imágenes al catálogo
+          catalogo: catalogo,
         });
         return imagen;
       });
@@ -93,7 +100,7 @@ export class CatalogosService {
       await this.imagenCatalogoRepository.save(imagenes);
     }
 
-    // Guardamos los cambios en el catálogo
+    // Guardar los cambios en el catálogo
     await this.catalogoRepository.save(catalogo);
 
     return {
@@ -107,7 +114,6 @@ export class CatalogosService {
   async remove(id: number) {
     const catalogo = await this.findOne(id);
     if (catalogo) {
-      // Eliminar las imágenes asociadas al catálogo antes de eliminar el catálogo
       if (catalogo.imagenesAdicionales && catalogo.imagenesAdicionales.length > 0) {
         await this.imagenCatalogoRepository.remove(catalogo.imagenesAdicionales);
       }

@@ -1,14 +1,12 @@
+// src/catalogos/dto/create-imagen-catalogo.dto.ts
 import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
 
-export class CreateImagenCatalogoDto {
+export class ImagenCatalogoDto {
   @IsString()
   @IsNotEmpty()
-  ruta_imagen: string;
+  ruta_imagen: string; // Ruta de la imagen
 
+  @IsOptional()  // El campo es opcional
   @IsString()
-  @IsOptional()
-  descripcion_imagen?: string;
-
-  @IsNotEmpty()
-  catalogoId: number; // Relación con Catalogo
+  descripcion_imagen: string; // Descripción de la imagen
 }

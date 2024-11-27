@@ -8,7 +8,7 @@ import { UpdateCatalogoDto } from './dto/catalogo/update-catalogo.dto';
 export class CatalogosController {
   constructor(private readonly catalogosService: CatalogosService) {}
 
-  @Post('create')
+  @Post('create')  // Corrige la ruta aquí
   async createCatalogo(@Body() createCatalogoDto: CreateCatalogoDto) {
     return await this.catalogosService.create(createCatalogoDto);
   }
