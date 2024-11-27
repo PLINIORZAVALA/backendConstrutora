@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Catalogo } from './catalogo.entity';
 
-@Entity()
+@Entity('imagenes_catalogo')
 export class ImagenCatalogo {
   @PrimaryGeneratedColumn()
   id: number;
@@ -12,6 +12,11 @@ export class ImagenCatalogo {
   @Column()
   descripcion_imagen: string;
 
-  @ManyToOne(() => Catalogo, catalogo => catalogo.imagenesAdicionales)
+  @ManyToOne(() => Catalogo, (catalogo) => catalogo.imagenesAdicionales)
+  @JoinColumn({ name: 'catalogoId' })  // Esto es suficiente para manejar la relación
   catalogo: Catalogo;
+
+  // Si decides mantener la columna 'catalogoId', lo harías así:
+  // @Column()
+  // catalogoId: number;
 }

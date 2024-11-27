@@ -1,0 +1,38 @@
+1. Crear un nuevo catálogo
+Método HTTP :POST
+URL :http://localhost:3000/catalogos
+Cuerpo :
+json
+
+Copiar código
+{
+  "nombre": "Nuevo Catálogo de Electrónica",
+  "tipo": "Electrónica",
+  "descripcion": "Catálogo con nuevos productos electrónicos",
+  "imagen": "imagen_nueva.jpg"
+}
+2. Obtener todos los catálogos
+Método HTTP :GET
+URL :http://localhost:3000/catalogos
+3. Obtener un catálogo por su ID
+Método HTTP :GET
+URL :http://localhost:3000/catalogos/{id}
+Ejemplo :http://localhost:3000/catalogos/10
+4. Actualizar un catálogo
+Método HTTP :PUT
+URL :http://localhost:3000/catalogos/{id}
+Cuerpo :
+json
+
+Copiar código
+{
+  "nombre": "Catálogo de Electrónica Actualizado",
+  "tipo": "Electrónica",
+  "descripcion": "Catálogo con productos electrónicos nuevos",
+  "imagen": "imagen_actualizada.jpg"
+}
+Ejemplo :http://localhost:3000/catalogos/10
+5. Eliminar un catálogo
+Método HTTP :DELETE
+URL :http://localhost:3000/catalogos/{id}
+Ejemplo :http://localhost:3000/catalogos/10

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCatalogoDto } from './dto/catalogo/create-catalogo.dto';
 import { UpdateCatalogoDto } from './dto/catalogo/update-catalogo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,9 +11,9 @@ import { UpdateImagenCatalogoDto } from './dto/imagenCatalogo/UpdateImagen.dto';
 export class CatalogosService {
   constructor(
     @InjectRepository(Catalogo)
-    private catalogoRepository: Repository<Catalogo>,
+    private readonly catalogoRepository: Repository<Catalogo>,
     @InjectRepository(ImagenCatalogo)
-    private imagenCatalogoRepository: Repository<ImagenCatalogo>,
+    private readonly imagenCatalogoRepository: Repository<ImagenCatalogo>,
   ) {}
 
   // Método para crear un catálogo con imágenes
@@ -122,26 +122,26 @@ export class CatalogosService {
     }
     return { message: `Catálogo con id ${id} no encontrado` };
   }
-  
 
-    // Método para crear una imagen adicional en el catálogo
+  // Método para crear una imagen adicional en el catálogo
   async createImagenAdicional(catalogoId: number, rutaImagen: string, descripcionImagen: string) {
+    // Verifica si el catálogo existe
     const catalogo = await this.catalogoRepository.findOne({
       where: { id: catalogoId },
     });
-
+    
     if (!catalogo) {
-      throw new Error('Catálogo no encontrado');
+      throw new HttpException('Catálogo no encontrado', HttpStatus.NOT_FOUND);
     }
-
+    
     const imagen = this.imagenCatalogoRepository.create({
       ruta_imagen: rutaImagen,
       descripcion_imagen: descripcionImagen,
-      catalogo: catalogo,
+      catalogo,  // Aquí se asigna el objeto completo de catalogo
     });
-
-    await this.imagenCatalogoRepository.save(imagen);
-    return imagen;
+    
+    return await this.imagenCatalogoRepository.save(imagen);
+    
   }
 
   // Método para obtener todas las imágenes adicionales de un catálogo
