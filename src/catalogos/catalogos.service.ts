@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Catalogo } from './entities/catalogo.entity';
 import { ImagenCatalogo } from './entities/catalogoImg.entity';
-import { UpdateImagenesAdicionalesDto } from './dto/imagenCatalogo/UpdateImagen.dto';
+import { UpdateImagenCatalogoDto } from './dto/imagenCatalogo/UpdateImagen.dto';
 
 @Injectable()
 export class CatalogosService {
@@ -122,4 +122,84 @@ export class CatalogosService {
     }
     return { message: `Catálogo con id ${id} no encontrado` };
   }
+  
+
+    // Método para crear una imagen adicional en el catálogo
+  async createImagenAdicional(catalogoId: number, rutaImagen: string, descripcionImagen: string) {
+    const catalogo = await this.catalogoRepository.findOne({
+      where: { id: catalogoId },
+    });
+
+    if (!catalogo) {
+      throw new Error('Catálogo no encontrado');
+    }
+
+    const imagen = this.imagenCatalogoRepository.create({
+      ruta_imagen: rutaImagen,
+      descripcion_imagen: descripcionImagen,
+      catalogo: catalogo,
+    });
+
+    await this.imagenCatalogoRepository.save(imagen);
+    return imagen;
+  }
+
+  // Método para obtener todas las imágenes adicionales de un catálogo
+  async findAllImagenesAdicionales(catalogoId: number) {
+    const catalogo = await this.catalogoRepository.findOne({
+      where: { id: catalogoId },
+      relations: ['imagenesAdicionales'],
+    });
+
+    if (!catalogo) {
+      throw new Error('Catálogo no encontrado');
+    }
+
+    return catalogo.imagenesAdicionales;
+  }
+
+  // Método para obtener una imagen adicional por su id
+  async findImagenAdicionalById(imagenId: number) {
+    const imagen = await this.imagenCatalogoRepository.findOne({
+      where: { id: imagenId },
+    });
+
+    if (!imagen) {
+      throw new Error('Imagen adicional no encontrada');
+    }
+
+    return imagen;
+  }
+
+  // Método para actualizar una imagen adicional
+  async updateImagenAdicional(imagenId: number, rutaImagen: string, descripcionImagen: string) {
+    const imagen = await this.imagenCatalogoRepository.findOne({
+      where: { id: imagenId },
+    });
+
+    if (!imagen) {
+      throw new Error('Imagen adicional no encontrada');
+    }
+
+    imagen.ruta_imagen = rutaImagen ?? imagen.ruta_imagen;
+    imagen.descripcion_imagen = descripcionImagen ?? imagen.descripcion_imagen;
+
+    await this.imagenCatalogoRepository.save(imagen);
+    return imagen;
+  }
+
+  // Método para eliminar una imagen adicional
+  async removeImagenAdicional(imagenId: number) {
+    const imagen = await this.imagenCatalogoRepository.findOne({
+      where: { id: imagenId },
+    });
+
+    if (!imagen) {
+      throw new Error('Imagen adicional no encontrada');
+    }
+
+    await this.imagenCatalogoRepository.remove(imagen);
+    return { message: `Imagen con id ${imagenId} eliminada` };
+  }
+
 }

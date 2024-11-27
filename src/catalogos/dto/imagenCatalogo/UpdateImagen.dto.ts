@@ -1,12 +1,12 @@
-import { IsArray, IsOptional, IsInt } from 'class-validator';
+import { IsArray, IsOptional, IsInt, IsString } from 'class-validator';
 
-export class UpdateImagenesAdicionalesDto {
+export class UpdateImagenCatalogoDto {
   @IsOptional()
   @IsArray()
   imagenesAdicionales?: { 
-    ruta_imagen: string; 
-    descripcion_imagen: string; 
-  }[];
+    ruta_imagen: string;  // Ruta de la imagen
+    descripcion_imagen: string;  // Descripción de la imagen
+  }[];  // Arreglo de imágenes a actualizar
 
   @IsOptional()
   @IsArray()

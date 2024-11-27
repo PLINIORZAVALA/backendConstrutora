@@ -1,38 +1,46 @@
-// src/catalogos/catalogos.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Put, Delete } from '@nestjs/common';
 import { CatalogosService } from './catalogos.service';
-import { CreateCatalogoDto } from './dto/catalogo/create-catalogo.dto';
-import { UpdateCatalogoDto } from './dto/catalogo/update-catalogo.dto';
 
-@Controller('api/catalogos')
+@Controller('catalogos')
 export class CatalogosController {
   constructor(private readonly catalogosService: CatalogosService) {}
 
-  @Post('create')  // Corrige la ruta aquí
-  async createCatalogo(@Body() createCatalogoDto: CreateCatalogoDto) {
-    return await this.catalogosService.create(createCatalogoDto);
-  }
-
-  @Put('update/:id')
-  async updateCatalogo(
-    @Param('id') id: number,
-    @Body() updateCatalogoDto: UpdateCatalogoDto,
+  @Post(':catalogoId/imagen')
+  async createImagenAdicional(
+    @Param('catalogoId') catalogoId: number,  // Asegurando que catalogoId sea pasado correctamente
+    @Body() createImagenDto: { ruta_imagen: string, descripcion_imagen: string }
   ) {
-    return await this.catalogosService.update(id, updateCatalogoDto);
+    return await this.catalogosService.createImagenAdicional(
+      catalogoId,
+      createImagenDto.ruta_imagen,
+      createImagenDto.descripcion_imagen
+    );
   }
 
-  @Get('getAll')
-  async getAllCatalogos() {
-    return await this.catalogosService.findAll();
+  @Get(':catalogoId/imagenes')
+  async findAllImagenesAdicionales(@Param('catalogoId') catalogoId: number) {
+    return await this.catalogosService.findAllImagenesAdicionales(catalogoId);  // Asegurando que catalogoId sea pasado correctamente
   }
 
-  @Get('getById/:id')
-  async getCatalogoById(@Param('id') id: number) {
-    return await this.catalogosService.findOne(id);
+  @Get('imagen/:imagenId')
+  async findImagenAdicionalById(@Param('imagenId') imagenId: number) {
+    return await this.catalogosService.findImagenAdicionalById(imagenId);  // Este método parece estar correcto
   }
 
-  @Delete('delete/:id')
-  async deleteCatalogo(@Param('id') id: number) {
-    return await this.catalogosService.remove(id);
+  @Put('imagen/:imagenId')
+  async updateImagenAdicional(
+    @Param('imagenId') imagenId: number,  // Asegurando que imagenId sea pasado correctamente
+    @Body() updateImagenDto: { ruta_imagen: string, descripcion_imagen: string }
+  ) {
+    return await this.catalogosService.updateImagenAdicional(
+      imagenId,
+      updateImagenDto.ruta_imagen,
+      updateImagenDto.descripcion_imagen
+    );
+  }
+
+  @Delete('imagen/:imagenId')
+  async removeImagenAdicional(@Param('imagenId') imagenId: number) {
+    return await this.catalogosService.removeImagenAdicional(imagenId);  // Este método parece estar correcto
   }
 }
