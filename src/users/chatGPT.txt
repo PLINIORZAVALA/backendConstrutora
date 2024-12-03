@@ -1,0 +1,5 @@
+primero: 
+dame todo de backen.
+  - Empiezo paso a paso al menos dos desde creacion de base de datos
+  - Actualizamos lo que hiciemos y añade dos pasos mas
+  - Pruebas en el postman que todo funcione

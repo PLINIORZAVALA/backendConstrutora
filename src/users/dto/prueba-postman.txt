@@ -1,0 +1,89 @@
+Probando en Postman:
+Usuario válido:
+
+json
+Copiar código
+{
+  "username": "juan123",
+  "password": "Secreta123!",
+  "role": "admin"
+}
+Respuesta esperada (código 201):
+
+json
+Copiar código
+{
+  "message": "Usuario creado exitosamente"
+}
+Usuario con nombre vacío:
+
+json
+Copiar código
+{
+  "username": "",
+  "password": "Secreta123!",
+  "role": "admin"
+}
+Respuesta esperada (código 400):
+
+json
+Copiar código
+{
+  "statusCode": 400,
+  "message": "El nombre de usuario no puede estar vacío.",
+  "error": "Bad Request"
+}
+Usuario con nombre de usuario ya existente:
+
+json
+Copiar código
+{
+  "username": "juan123", 
+  "password": "Secreta123!",
+  "role": "admin"
+}
+Respuesta esperada (código 400):
+
+json
+Copiar código
+{
+  "statusCode": 400,
+  "message": "El nombre de usuario ya está en uso.",
+  "error": "Bad Request"
+}
+Usuario con contraseña corta:
+
+json
+Copiar código
+{
+  "username": "maria123",
+  "password": "123",
+  "role": "admin"
+}
+Respuesta esperada (código 400):
+
+json
+Copiar código
+{
+  "statusCode": 400,
+  "message": "La contraseña debe tener al menos 6 caracteres.",
+  "error": "Bad Request"
+}
+Usuario con rol no permitido:
+
+json
+Copiar código
+{
+  "username": "carlos123",
+  "password": "Secreta123!",
+  "role": "manager"
+}
+Respuesta esperada (código 400):
+
+json
+Copiar código
+{
+  "statusCode": 400,
+  "message": "El rol debe ser uno de los siguientes: admin, superadmin.",
+  "error": "Bad Request"
+}
