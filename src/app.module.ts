@@ -3,8 +3,6 @@ import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
 import { CatalogosModule } from './catalogos/catalogos.module';
-import { CitasModule } from './citas/citas.module';
-import { ProyectosModule } from './proyectos/proyectos.module';
 import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
 
@@ -20,9 +18,7 @@ import { AuthModule } from './auth/auth.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true, // Evitar en producción, en desarrollo puedes usar true si quieres que la base se sincronice automáticamente
     }),
-    CatalogosModule, 
-    CitasModule, 
-    ProyectosModule, 
+    CatalogosModule,  
     UserModule, AuthModule
   ],
   controllers: [AppController],
