@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { CatalogosModule } from './catalogos/catalogos.module';
 import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
+import { ImgCatalogoModule } from './img-catalogo/img-catalogo.module';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true, // Evitar en producción, en desarrollo puedes usar true si quieres que la base se sincronice automáticamente
     }),
     CatalogosModule,  
-    UserModule, AuthModule
+    UserModule, AuthModule, ImgCatalogoModule
   ],
   controllers: [AppController],
   providers: [AppService],
