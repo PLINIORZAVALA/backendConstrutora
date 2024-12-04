@@ -1,0 +1,132 @@
+1. Crear una nueva cita (POST)
+URL: http://localhost:3000/citas
+
+Método: POST
+
+Cuerpo (Body):
+Selecciona raw y JSON en el cuerpo de la solicitud.
+
+json
+Copiar código
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "juan.perez@example.com",
+  "telefono": "987654321",
+  "fecha": "2024-12-05T10:30:00Z",
+  "motivo": "Revisión médica",
+  "estado": "pendiente",
+  "usuario_id": 1  // ID del usuario que gestiona la cita (relación con User)
+}
+Respuesta esperada:
+
+json
+Copiar código
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "juan.perez@example.com",
+  "telefono": "987654321",
+  "fecha": "2024-12-05T10:30:00Z",
+  "motivo": "Revisión médica",
+  "estado": "pendiente",
+  "usuario": "Admin",  // Suponiendo que no se ha asignado un usuario específico
+  "fechaCreacion": "2024-12-05T00:00:00Z",
+  "fechaActualizacion": "2024-12-05T00:00:00Z"
+}
+2. Obtener todas las citas (GET)
+URL: http://localhost:3000/citas
+
+Método: GET
+
+Respuesta esperada:
+Una lista de citas.
+
+json
+Copiar código
+[
+  {
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan.perez@example.com",
+    "telefono": "987654321",
+    "fecha": "2024-12-05T10:30:00Z",
+    "motivo": "Revisión médica",
+    "estado": "pendiente",
+    "usuario": "Admin",
+    "fechaCreacion": "2024-12-05T00:00:00Z",
+    "fechaActualizacion": "2024-12-05T00:00:00Z"
+  },
+  {
+    "nombre": "Ana",
+    "apellido": "Gómez",
+    "email": "ana.gomez@example.com",
+    "telefono": "976543210",
+    "fecha": "2024-12-06T15:00:00Z",
+    "motivo": "Consulta general",
+    "estado": "confirmada",
+    "usuario": "Admin",
+    "fechaCreacion": "2024-12-06T00:00:00Z",
+    "fechaActualizacion": "2024-12-06T00:00:00Z"
+  }
+]
+3. Obtener una cita por ID (GET)
+URL: http://localhost:3000/citas/1
+(Asumiendo que la cita con ID 1 existe)
+
+Método: GET
+
+Respuesta esperada:
+
+json
+Copiar código
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "juan.perez@example.com",
+  "telefono": "987654321",
+  "fecha": "2024-12-05T10:30:00Z",
+  "motivo": "Revisión médica",
+  "estado": "pendiente",
+  "usuario": "Admin",
+  "fechaCreacion": "2024-12-05T00:00:00Z",
+  "fechaActualizacion": "2024-12-05T00:00:00Z"
+}
+4. Actualizar una cita (PUT)
+URL: http://localhost:3000/citas/1
+(Asumiendo que la cita con ID 1 existe)
+
+Método: PUT
+
+Cuerpo (Body):
+Selecciona raw y JSON en el cuerpo de la solicitud.
+
+json
+Copiar código
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "juan.perez@example.com",
+  "telefono": "987654321",
+  "fecha": "2024-12-05T10:30:00Z",
+  "motivo": "Revisión urgente",
+  "estado": "confirmada"
+}
+Respuesta esperada:
+
+json
+Copiar código
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "juan.perez@example.com",
+  "telefono": "987654321",
+  "fecha": "2024-12-05T10:30:00Z",
+  "motivo": "Revisión urgente",
+  "estado": "confirmada",
+  "usuario": "Admin",
+  "fechaCreacion": "2024-12-05T00:00:00Z",
+  "fechaActualizacion": "2024-12-05T00:00:00Z"
+}
+5. Eliminar una cita (DELETE)
+URL: http://localhost:3000/citas/1
